@@ -12,6 +12,7 @@ defmodule TodoApi.User do
   def changeset(model, params \\ %{}) do
     model
     |> cast(params, [:email, :password] )
+    |> validate_required([:email])
     |> validate_length(:email, min: 1, max: 255)
     |> validate_format(:email, ~r/@/)
   end
