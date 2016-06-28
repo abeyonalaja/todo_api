@@ -21,7 +21,7 @@ defmodule TodoApi.UserControllerTest do
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
     conn = post conn, user_path(conn, :create), user: @invalid_attrs
-    body = json_response(conn, 422)["errors"] != %{}
+    assert json_response(conn, 422)["errors"] != %{}
   end
 
 
