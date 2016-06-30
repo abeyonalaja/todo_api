@@ -9,4 +9,8 @@ defmodule TodoApi.UserView do
     %{id: user.id,
       email: user.email}
   end
+
+  def render("new.json",%{user: user, session: session}) do
+    %{id: user.id, email: user.email, token: session.token}
+  end
 end

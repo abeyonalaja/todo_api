@@ -2,6 +2,7 @@ defmodule TodoApi.UserControllerTest do
   use TodoApi.ConnCase
 
   alias TodoApi.User
+  alias TodoApi.Session
 
   @valid_attrs %{email: "foo@bar.com", password: "s3cr3t"}
   @invalid_attrs %{}
@@ -13,8 +14,10 @@ defmodule TodoApi.UserControllerTest do
   test "creates and renders resource when data is valid", %{conn: conn} do
     conn = post conn, user_path(conn, :create), user: @valid_attrs
     body = json_response(conn, 201)
-    assert body["data"]["id"]
-    assert body["data"]["email"]
+    token = json_response(conn, 201)["token"]
+    assert body["id"]
+    assert body["email"]
+    assert Repo.get_by(Session, token: token)
     refute body["data"]["password"]
     assert Repo.get_by(User, email: "foo@bar.com")
   end

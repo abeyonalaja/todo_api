@@ -2,6 +2,7 @@ defmodule TodoApi.UserController do
   use TodoApi.Web, :controller
 
   alias TodoApi.User
+  alias TodoApi.Session
 
   plug :scrub_params, "user" when action in [:create]
 
@@ -10,9 +11,11 @@ defmodule TodoApi.UserController do
 
     case Repo.insert(changeset) do
       {:ok, user} ->
-        conn
-        |> put_status(:created)
-        |> render("show.json", user: user)
+        session_changeset = Session.create_changeset(%Session{}, %{user_id: user.id})
+        {:ok, session} = Repo.insert(session_changeset)
+          conn
+          |> put_status(:created)
+          |> render("new.json", [user: user, session: session])
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
